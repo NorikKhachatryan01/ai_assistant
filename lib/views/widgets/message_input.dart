@@ -1,4 +1,4 @@
-import 'package:ai_assistant/providers/chat_provider.dart';
+import 'package:ai_assistant/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -33,21 +33,19 @@ class MessageInputField extends ConsumerWidget {
               ),
               onFieldSubmitted: (value) {
                 if (_controller.text.isNotEmpty) {
-                  ref
-                      .read(chatViewModelProvider.notifier)
-                      .sendMessage(_controller.text);
+                    ref.read(chatViewModelProvider.notifier).addMessage(_controller.text, true);
+                ref.read(chatViewModelProvider.notifier).sendMessageToBot(_controller.text);
                   _controller.clear();
                 }
               },
             ),
           ),
           IconButton(
-            icon: const  Icon(Icons.send),
+            icon: const Icon(Icons.send),
             onPressed: () {
               if (_controller.text.isNotEmpty) {
-                ref
-                    .read(chatViewModelProvider.notifier)
-                    .sendMessage(_controller.text);
+                // Call to send message to bot
+                ref.read(chatViewModelProvider.notifier).sendMessageToBot(_controller.text);
                 _controller.clear();
               }
             },

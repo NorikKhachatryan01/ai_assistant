@@ -1,4 +1,5 @@
 import 'package:ai_assistant/models/chat_room_model.dart';
+import 'package:ai_assistant/services/api_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:ai_assistant/providers/chat_provider.dart';
@@ -24,7 +25,7 @@ class ChatScreen extends ConsumerWidget {
       drawer: const ChatDrawer(),
       body: Column(
         children: <Widget>[
-          const Expanded(child: MessageList()),
+           Expanded(child: MessageList()),
           MessageInputField(),
         ],
       ),

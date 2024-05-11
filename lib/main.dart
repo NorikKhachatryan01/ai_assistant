@@ -1,4 +1,5 @@
 import 'package:ai_assistant/views/chat_screen.dart';
+import 'package:ai_assistant/views/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -11,7 +12,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'AI Assistant',
       home: ChatScreen(),
