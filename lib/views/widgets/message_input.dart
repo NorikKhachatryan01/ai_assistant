@@ -44,7 +44,6 @@ class MessageInputField extends ConsumerWidget {
             icon: const Icon(Icons.send),
             onPressed: () {
               if (_controller.text.isNotEmpty) {
-                // Call to send message to bot
                 ref.read(chatViewModelProvider.notifier).sendMessageToBot(_controller.text);
                 _controller.clear();
               }

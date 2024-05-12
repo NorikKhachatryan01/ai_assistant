@@ -1,19 +1,22 @@
 class UserModel {
-  String firstName;
-  String lastName;
-  String email;
-  bool emailVerified;
-  String token;
+  final String firstName;
+  final String lastName;
+  final String email;
+  final bool emailVerified;
 
-  UserModel({required this.firstName, required this.lastName, required this.email, required this.emailVerified, required this.token});
+  UserModel({
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    required this.emailVerified,
+  });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
     return UserModel(
-      firstName: json['firstName'],
-      lastName: json['lastName'],
-      email: json['email'],
-      emailVerified: json['emailVerified'],
-      token: json['token'],
+      firstName: json['firstName'] as String,
+      lastName: json['lastName'] as String,
+      email: json['email'] as String,
+      emailVerified: json['emailVerified'] as bool,
     );
   }
 }

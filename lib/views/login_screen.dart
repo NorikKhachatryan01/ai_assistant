@@ -2,16 +2,14 @@ import 'package:ai_assistant/providers/auth_provider.dart';
 import 'package:ai_assistant/views/registeration_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'chat_screen.dart'; // Import your chat screen
+import 'chat_screen.dart'; 
 
 class LoginScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
     if (authState.user != null) {
-      // Use WidgetsBinding to schedule a callback for the end of this frame
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        // Check if the current route is still active to prevent unwanted navigation
         if (ModalRoute.of(context)?.isCurrent ?? false) {
           Navigator.pushReplacement(
             context,
@@ -20,7 +18,6 @@ class LoginScreen extends ConsumerWidget {
         }
       });
     } else if (authState.error != null) {
-      // Use WidgetsBinding to show an error message if there is an error in the auth state
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(authState.error ?? '')));
@@ -51,9 +48,7 @@ class LoginForm extends ConsumerWidget {
     final authState = ref.watch(authStateProvider);
 
     if (authState.user != null) {
-      // Use WidgetsBinding to schedule a callback for the end of this frame
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        // Check if the current route is still active to prevent unwanted navigation
         if (ModalRoute.of(context)?.isCurrent ?? false) {
           Navigator.pushReplacement(
             context,
@@ -62,18 +57,14 @@ class LoginForm extends ConsumerWidget {
         }
       });
     } else if (authState.error!.isNotEmpty) {
-      // Use WidgetsBinding to show an error message if there is an error in the auth state
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(authState.error ?? '')));
       });
     }
-
-    // Automatically navigate when authenticated
     if (authState.user != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (ModalRoute.of(context)!.isCurrent) {
-          // Prevents multiple navigations
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => ChatScreen()));
         }
@@ -85,6 +76,10 @@ class LoginForm extends ConsumerWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(bottom: 0),
+            child: Image.asset('assets/images/logo.png', width: 300),
+          ),
           TextFormField(
             decoration: InputDecoration(labelText: 'Email'),
             validator: (value) =>
@@ -123,7 +118,7 @@ class LoginForm extends ConsumerWidget {
               context,
               MaterialPageRoute(
                   builder: (context) =>
-                      RegistrationScreen()), // Assuming you have a RegistrationScreen
+                      RegistrationScreen()), 
             ),
           ),
           if (authState.error!.isNotEmpty)

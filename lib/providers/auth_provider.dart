@@ -15,16 +15,10 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
   Future<void> login(String email, String password) async {
     state = AuthState.loading();
     try {
-      print('//////////////////////////////////////////////////////////');
-      print('kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
-      print(password);
-      print(email);
       final user = await ref.read(authServiceProvider).login(email, password);
-      print('//////////////////////////////////////////////////////////');
-      print(user);
       state = AuthState.authenticated(user);
     } catch (e) {
-      state = AuthState.error(e.toString() + ' HAYLOOOOOO');
+      state = AuthState.error(e.toString());
     }
   }
 }

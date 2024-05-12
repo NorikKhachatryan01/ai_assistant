@@ -1,3 +1,6 @@
+import 'package:ai_assistant/providers/subscribe_provider.dart';
+import 'package:ai_assistant/providers/token_provider.dart';
+import 'package:ai_assistant/services/auth_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -16,8 +19,8 @@ final chatViewModelProvider =
 });
 
 class ChatViewModel extends StateNotifier<List<Message>> {
-  final Ref _ref;
-  ChatViewModel(this._ref) : super([]);
+  final Ref ref;
+  ChatViewModel(this.ref) : super([]);
 
   void addMessage(String message, bool isUser, {bool isLoading = false}) {
     state = [
@@ -27,38 +30,37 @@ class ChatViewModel extends StateNotifier<List<Message>> {
   }
 
   Future<void> sendMessageToBot(String prompt) async {
-    const String token =
-        'eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJkZ0BnbWFpbC5jb20iLCJpYXQiOjE3MTU0MTk1NTcsImV4cCI6MTcxNTUwNTk1NywiYXV0aG9yaXRpZXMiOlsiVVNFUiJdfQ.8wrStLKQFpPFaQoMFw1WeLKAikQiDN-dFsQpTINhcqU'; // Replace with your actual bearer token
+    String url = ref.watch(subscriptionProvider) ? 'https://ab3d-2a00-f3c-5636-0-188f-8786-f8b8-4405.ngrok-free.app/v1/completions/premium' : 'https://ab3d-2a00-f3c-5636-0-188f-8786-f8b8-4405.ngrok-free.app/v1/completions/standard';
+    String token = ref.read(tokenProvider.notifier).token;
+    print('This is the api service sendMessage fucntion');
+    print(token);
     var headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     };
 
     addMessage("", false, isLoading: true);
-    print('.............................................1');
+
     try {
-      print('.............................................2');
       var response = await http.post(
         Uri.parse(
-            'https://9dab-5-77-254-89.ngrok-free.app/v1/completions/standard'),
+            url),
         headers: headers,
         body: jsonEncode({'prompt': prompt}),
       );
 
       state =
-          state.where((m) => !m.isLoading).toList(); // Remove loading message
-      print('.............................................3');
-      print(response.body);
+          state.where((m) => !m.isLoading).toList();
       if (response.statusCode == 200) {
-        print('.............................................4');
         var data = jsonDecode(response.body);
         addMessage(data['response'], false);
       } else {
-        addMessage('Failed to fetch response from the server.', false);
+        print(jsonDecode(response.body));
+        addMessage(jsonDecode(response.body)['error'], false);
       }
     } catch (e) {
       state =
-          state.where((m) => !m.isLoading).toList(); // Remove loading message
+          state.where((m) => !m.isLoading).toList(); 
       addMessage('Error: $e', false);
     }
   }

@@ -1,8 +1,9 @@
 import 'dart:math';
-
 import 'package:ai_assistant/models/chat_room_model.dart';
+import 'package:ai_assistant/services/auth_service.dart';
 import 'package:ai_assistant/services/chat_room_service.dart';
 import 'package:ai_assistant/views/chat_screen.dart';
+import 'package:ai_assistant/views/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -31,15 +32,32 @@ class ChatDrawer extends ConsumerWidget {
           ),
           ListTile(
             leading: const Icon(Icons.add),
-            title: const  Text('Create New Chat Room'),
+            title: const Text('Create New Chat Room'),
             onTap: () async {
-              // Instantiate a new chat room and add it using the ChatRoomService
               final newChatRoom =
                   ChatRoom(name: 'New Chat Room ${Random().nextInt(100)}');
               ref
                   .read(chatRoomServiceProvider.notifier)
                   .addChatRoom(newChatRoom);
-              // Close the drawer
+              Navigator.of(context).pop();
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.add),
+            title: const Text('Upgrade'),
+            onTap: () async {
+              try {
+                await ref.read(authServiceProvider).subscribe();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                      content:
+                          Text("Subscription successful and token updated!")),
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Error subscribing: ${e.toString()}")),
+                );
+              }
               Navigator.of(context).pop();
             },
           ),
@@ -55,9 +73,7 @@ class ChatDrawer extends ConsumerWidget {
                 leading: const Icon(Icons.chat),
                 title: Text(chatRooms[index].name),
                 onTap: () {
-                  // Close the drawer
                   Navigator.of(context).pop();
-                  // Navigate to the ChatScreen with the selected chat room
                   Navigator.of(context).pushReplacement(
                     MaterialPageRoute(
                       builder: (context) =>
@@ -68,17 +84,21 @@ class ChatDrawer extends ConsumerWidget {
               );
             },
           ),
-         const  Divider(thickness: 2.0),
+          const Divider(thickness: 2.0),
           ListTile(
             leading: const Icon(Icons.exit_to_app),
-            title: const  Text('Logout'),
-            onTap: () {
-              Navigator.of(context).pop();
+            title: const Text('Logout'),
+            onTap: () async {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => LoginScreen()),
+              );
+              await ref.read(authServiceProvider).logout();
             },
           ),
           ListTile(
-            leading: const  Icon(Icons.info_outline),
-            title: const  Text('About Me'),
+            leading: const Icon(Icons.info_outline),
+            title: const Text('About Me'),
             onTap: () {
               Navigator.of(context).pop();
               _showAboutDialog(context);
@@ -96,7 +116,7 @@ void _showAboutDialog(BuildContext context) {
     builder: (BuildContext context) {
       return AlertDialog(
         title: const Text('About Me'),
-        content: const  SingleChildScrollView(
+        content: const SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
               Text('This is a AI Assistant application.'),

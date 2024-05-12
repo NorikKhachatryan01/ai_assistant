@@ -1,18 +1,20 @@
+import 'package:ai_assistant/providers/subscribe_provider.dart';
+import 'package:ai_assistant/providers/token_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../models/user_model.dart';
+import '../models/user_model.dart'; 
 
-final authServiceProvider = Provider<AuthService>((ref) => AuthService());
+final authServiceProvider = Provider<AuthService>((ref) => AuthService(ref));
 
 class AuthService {
-  String token = '';
+  final Ref ref;
+  AuthService(this.ref);
 
   Future<UserModel> login(String email, String password) async {
     var headers = {
       'Content-Type': 'application/json',
-      'Accept':
-          'application/json', // To ensure the server knows what response format we accept
+      'Accept': 'application/json',
     };
 
     var response = await http.post(
@@ -22,17 +24,14 @@ class AuthService {
     );
 
     if (response.statusCode == 200) {
-      print('response is Ok 200');
       var data = jsonDecode(response.body);
       if (data['status'] == 'success') {
-        // Save the token in the variable
-        print(data);
-        token = data['token'];
-        print(data['userInfo']);
-        print(data['errorMessage']);
+        ref.read(tokenProvider.notifier).token = data['token'] ?? '';
+        print('This is the auth service login function');
+        print(ref.read(tokenProvider.notifier).token);
         return UserModel.fromJson(data['userInfo']);
       } else {
-        throw Exception(data['errorMessage']);
+        throw Exception(data['errorMessage'] ?? 'Unknown error occurred');
       }
     } else {
       throw Exception('Failed to load data');
@@ -52,16 +51,20 @@ class AuthService {
       }),
     );
 
-    var data = jsonDecode(response.body);
-    print(data);
-    return data['status'] == 'success';
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      return data['status'] == 'success';
+    } else {
+      throw Exception('Failed to register');
+    }
   }
 
-  Future<void> logout(String token) async {
+  Future<void> logout() async {
+    // Modified to not require a token argument
     var headers = {
       'Content-Type': 'application/json',
       'Authorization':
-          'Bearer $token', // Assuming JWT or similar token is used for auth
+          'Bearer ${ref.read(tokenProvider.notifier).token}', // Use the stored token
     };
 
     var response = await http.post(
@@ -70,10 +73,38 @@ class AuthService {
     );
 
     if (response.statusCode == 200) {
-      // Handle successful logout
+      ref.read(tokenProvider.notifier).token =
+          ''; // Clear token on successful logout
     } else {
-      // Handle error on logout
       throw Exception('Failed to logout');
+    }
+  }
+
+  Future<void> subscribe() async {
+    var headers = {
+      'Content-Type': 'application/json',
+      'Authorization':
+          'Bearer ${ref.read(tokenProvider.notifier).token}', // Use the stored token
+    };
+
+    var response = await http.post(
+      Uri.parse('http://127.0.0.1:8080/v1/user/subscribe'),
+      headers: headers,
+    );
+
+    if (response.statusCode == 200) {
+      var data = jsonDecode(response.body);
+      if (data['status'] == 'success') {
+        if (data['newToken'] != null) {
+          ref.read(tokenProvider.notifier).token = data['newToken'];
+          ref.read(subscriptionProvider.notifier).updateSubscription(true);
+        }
+      } else {
+        throw Exception(data['errorMessage'] ??
+            'Unknown error occurred during subscription');
+      }
+    } else {
+      throw Exception('Failed to subscribe');
     }
   }
 }

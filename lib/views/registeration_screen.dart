@@ -1,5 +1,6 @@
 import 'package:ai_assistant/providers/auth_provider.dart';
 import 'package:ai_assistant/services/auth_service.dart';
+import 'package:ai_assistant/views/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'chat_screen.dart';
@@ -34,9 +35,7 @@ class RegistrationForm extends ConsumerWidget {
     final authState = ref.watch(authStateProvider);
 
     if (authState.user != null) {
-      // Use WidgetsBinding to schedule a callback for the end of this frame
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        // Check if the current route is still active to prevent unwanted navigation
         if (ModalRoute.of(context)?.isCurrent ?? false) {
           Navigator.pushReplacement(
             context,
@@ -45,7 +44,6 @@ class RegistrationForm extends ConsumerWidget {
         }
       });
     } else if (authState.error!.isNotEmpty) {
-      // Use WidgetsBinding to show an error message if there is an error in the auth state
       WidgetsBinding.instance.addPostFrameCallback((_) {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(authState.error ?? '')));
@@ -92,7 +90,6 @@ class RegistrationForm extends ConsumerWidget {
             onPressed: () async {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
-                // Implement registration logic with AuthService
                 try {
                   final isSuccess = await ref
                       .read(authServiceProvider)
@@ -100,7 +97,7 @@ class RegistrationForm extends ConsumerWidget {
                   if (isSuccess) {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => ChatScreen()),
+                      MaterialPageRoute(builder: (context) => LoginScreen()),
                     );
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
