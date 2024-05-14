@@ -5,4 +5,6 @@ class ChatRoom {
   final List<Message> messages;
 
   ChatRoom({required this.name, List<Message>? messages}) : messages = messages ?? [];
+
+  void copyWith({required List<Message> messages}) {}
 }

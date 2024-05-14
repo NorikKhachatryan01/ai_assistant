@@ -18,7 +18,7 @@ class AuthStateNotifier extends StateNotifier<AuthState> {
       final user = await ref.read(authServiceProvider).login(email, password);
       state = AuthState.authenticated(user);
     } catch (e) {
-      state = AuthState.error(e.toString());
+      state = AuthState.error(e.toString().substring(10));
     }
   }
 }

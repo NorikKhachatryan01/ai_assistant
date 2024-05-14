@@ -43,7 +43,7 @@ class ChatDrawer extends ConsumerWidget {
             },
           ),
           ListTile(
-            leading: const Icon(Icons.add),
+            leading: const Icon(Icons.flash_on),
             title: const Text('Upgrade'),
             onTap: () async {
               try {
@@ -88,12 +88,11 @@ class ChatDrawer extends ConsumerWidget {
           ListTile(
             leading: const Icon(Icons.exit_to_app),
             title: const Text('Logout'),
-            onTap: () async {
-              Navigator.pushReplacement(
-                context,
+            onTap: () {
+              ref.read(authServiceProvider).logout();
+              Navigator.of(context).pushReplacement(
                 MaterialPageRoute(builder: (context) => LoginScreen()),
               );
-              await ref.read(authServiceProvider).logout();
             },
           ),
           ListTile(
@@ -119,9 +118,14 @@ void _showAboutDialog(BuildContext context) {
         content: const SingleChildScrollView(
           child: ListBody(
             children: <Widget>[
-              Text('This is a AI Assistant application.'),
-              Text(
-                  'Created to demonstrate our skills in Software Engineering.'),
+              Text('This is a Biti AI Assistant.'),
+              Padding(
+                padding: EdgeInsets.only(top: 8.0),
+                child: Text(
+                  'Created to demonstrate our skills in the Software Engineering.',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w400),
+                ),
+              ),
             ],
           ),
         ),

@@ -30,7 +30,7 @@ class ChatViewModel extends StateNotifier<List<Message>> {
   }
 
   Future<void> sendMessageToBot(String prompt) async {
-    String url = ref.watch(subscriptionProvider) ? 'https://ab3d-2a00-f3c-5636-0-188f-8786-f8b8-4405.ngrok-free.app/v1/completions/premium' : 'https://ab3d-2a00-f3c-5636-0-188f-8786-f8b8-4405.ngrok-free.app/v1/completions/standard';
+    String url = ref.watch(subscriptionProvider) ? 'https://4849-193-104-215-11.ngrok-free.app/v1/completions/premium' : 'https://4849-193-104-215-11.ngrok-free.app/v1/completions/standard';
     String token = ref.read(tokenProvider.notifier).token;
     print('This is the api service sendMessage fucntion');
     print(token);

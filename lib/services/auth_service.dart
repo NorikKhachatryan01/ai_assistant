@@ -3,7 +3,7 @@ import 'package:ai_assistant/providers/token_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../models/user_model.dart'; 
+import '../models/user_model.dart';
 
 final authServiceProvider = Provider<AuthService>((ref) => AuthService(ref));
 
@@ -59,32 +59,15 @@ class AuthService {
     }
   }
 
-  Future<void> logout() async {
-    // Modified to not require a token argument
-    var headers = {
-      'Content-Type': 'application/json',
-      'Authorization':
-          'Bearer ${ref.read(tokenProvider.notifier).token}', // Use the stored token
-    };
-
-    var response = await http.post(
-      Uri.parse('http://127.0.0.1:8080/v1/auth/logout'),
-      headers: headers,
-    );
-
-    if (response.statusCode == 200) {
-      ref.read(tokenProvider.notifier).token =
-          ''; // Clear token on successful logout
-    } else {
-      throw Exception('Failed to logout');
-    }
+ void logout()  {
+    ref.read(tokenProvider.notifier).token = '';
   }
 
   Future<void> subscribe() async {
     var headers = {
       'Content-Type': 'application/json',
       'Authorization':
-          'Bearer ${ref.read(tokenProvider.notifier).token}', // Use the stored token
+          'Bearer ${ref.read(tokenProvider.notifier).token}', 
     };
 
     var response = await http.post(
