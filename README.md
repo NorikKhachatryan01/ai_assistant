@@ -58,6 +58,6 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## Contact
 
-Your Name - [norik.khachatryan01@gmail.com](mailto:your-email@example.com)
+[norik.khachatryan01@gmail.com](mailto:your-email@example.com)
 
 Project Link: [https://github.com/NorikKhachatryan01/ai_assistant](https://github.com/your-username/ai_assistant)
